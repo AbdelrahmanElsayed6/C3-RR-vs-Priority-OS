@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C3 | Round Robin vs Priority Scheduling</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header>
+  <div class="header-left">
+    <h1>C3 | <span>Round Robin</span> vs Priority Scheduling</h1>
+    <p>Operating Systems · CPU Scheduling Comparison Simulator</p>
+  </div>
+  <div class="badge-row">
+    <span class="badge badge-rr">⬡ Round Robin</span>
+    <span class="badge badge-pr">◈ Preemptive Priority</span>
+  </div>
+</header>
+
+<div class="main-grid">
+
+  <!-- ═══════════════ LEFT PANEL ═══════════════ -->
+  <div class="left-col">
+    <div class="card">
+      <div class="card-header">
+        <div class="icon icon-blue">⚙</div>
+        <h2>Configuration &amp; Process Input</h2>
+      </div>
+
+      <!-- Scenario Buttons -->
+      <div class="scenarios-bar">
+        <span class="s-label">Load Scenario:</span>
+        <button class="btn-scenario" onclick="loadScenario('A')">A · Basic</button>
+        <button class="btn-scenario" onclick="loadScenario('B')">B · Urgency</button>
+        <button class="btn-scenario" onclick="loadScenario('C')">C · Fairness</button>
+        <button class="btn-scenario" onclick="loadScenario('D')">D · Starvation</button>
+        <button class="btn-scenario" onclick="loadScenario('E')">E · Validation</button>
+      </div>
+
+      <!-- Scenario Description Box -->
+      <div id="scenario-desc" class="scenario-desc" style="display:none"></div>
+
+      <div class="card-body">
+        <div class="config-row">
+          <div class="field-group">
+            <label>⏱ Time Quantum (RR)</label>
+            <input type="number" id="quantum" value="3" min="1" placeholder="e.g. 3">
+          </div>
+          <div class="field-group">
+            <label>⬆ Priority Rule</label>
+            <select id="priority-rule">
+              <option value="low">Lower Number = Higher Priority</option>
+              <option value="high">Higher Number = Higher Priority</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="proc-table-wrap">
+          <table class="proc-table">
+            <thead>
+              <tr>
+                <th>PID</th>
+                <th>Arrival</th>
+                <th>Burst</th>
+                <th>Priority</th>
+                <th>Del</th>
+              </tr>
+            </thead>
+            <tbody id="process-list"></tbody>
+          </table>
+        </div>
+
+        <!-- Validation Message -->
+        <div id="validation-msg"></div>
+
+        <div class="btn-row">
+          <button class="btn btn-add" onclick="addRow()">+ Add Process</button>
+          <button class="btn btn-reset" onclick="resetAll()">↺ Reset</button>
+          <button class="btn btn-run" onclick="startSimulation()">▶ Run</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ RIGHT PANEL ═══════════════ -->
+  <div class="right-col">
+
+    <!-- Round Robin Results -->
+    <div class="card">
+      <div class="card-header">
+        <div class="icon icon-blue">⬡</div>
+        <h2>Round Robin Results</h2>
+        <span id="rr-quantum-badge" class="algo-badge"></span>
+      </div>
+      <!-- Ready Queue Display -->
+      <div class="queue-row" id="rr-queue-display">
+        <span class="queue-label">Ready Queue:</span>
+        <span class="queue-empty">Run simulation to see queue state</span>
+      </div>
+      <div class="card-body">
+        <p class="section-label">Gantt Chart</p>
+        <div class="gantt-outer">
+          <div id="rr-gantt" class="gantt-chart">
+            <div class="placeholder"><div class="icon-big">⬡</div>No data yet</div>
+          </div>
+        </div>
+        <div id="rr-legend" class="legend-row" style="display:none"></div>
+        <div class="metrics-wrap">
+          <div id="rr-table-container">
+            <div class="placeholder">Run simulation to see metrics</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Priority Results -->
+    <div class="card">
+      <div class="card-header">
+        <div class="icon icon-red">◈</div>
+        <h2>Preemptive Priority Results</h2>
+        <span id="pr-rule-badge" class="algo-badge"></span>
+      </div>
+      <div class="card-body">
+        <p class="section-label">Gantt Chart</p>
+        <div class="gantt-outer">
+          <div id="priority-gantt" class="gantt-chart">
+            <div class="placeholder"><div class="icon-big">◈</div>No data yet</div>
+          </div>
+        </div>
+        <div id="pr-legend" class="legend-row" style="display:none"></div>
+        <div id="starvation-warn" class="warn-box">
+          ⚠ Starvation Risk Detected: At least one low-priority process had a significantly high waiting time.
+        </div>
+        <div class="metrics-wrap">
+          <div id="priority-table-container">
+            <div class="placeholder">Run simulation to see metrics</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison & Report -->
+    <div class="card">
+      <div class="card-header">
+        <div class="icon icon-gold">≋</div>
+        <h2>Performance Analysis &amp; Comparison</h2>
+      </div>
+      <div class="card-body" id="final-report">
+        <div class="placeholder">
+          <div class="icon-big">≋</div>
+          Run a simulation to generate the technical analysis and conclusion.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /right-col -->
+</div><!-- /main-grid -->
+
+<script src="script.js"></script>
+</body>
+</html>
