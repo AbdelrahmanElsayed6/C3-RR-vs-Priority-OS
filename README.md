@@ -57,6 +57,22 @@ Priority Scheduling rule: Lower number = higher priority (tie-break: earlier arr
 3 · Starvation & Fairness Risk
 ⚠ Starvation risk observed in Priority Scheduling. Maximum waiting time (22) is significantly above the average (10.00). A low-priority process experienced severe delay — this happens when high-priority processes continuously preempt it.
 
+4 · Required Analysis Questions
+Q1: Which algorithm gave better average waiting time?
+Priority — RR: 14.60, PR: 10.00.
+
+Q2: Which algorithm gave better average response time?
+Round Robin — RR: 4.60, PR: 9.20.
+
+Q3: Did higher-priority processes gain a significant advantage?
+Yes — high-priority processes completed with below-average waiting time.
+
+Q4: Did Round Robin appear more balanced across all processes?
+Yes — with quantum = 3, all processes received CPU time in rotation. No process was completely blocked by another.
+
+Q5: Was starvation observed or likely in Priority Scheduling?
+Yes — a low-priority process experienced disproportionately high waiting time.
+
 **Screenshot:**  
 <img width="1128" height="935" alt="Screenshot 2026-05-06 134417" src="https://github.com/user-attachments/assets/09c72b4d-7557-4123-93d7-ace5d0970d65" />
 <img width="589" height="930" alt="Screenshot 2026-05-06 134505" src="https://github.com/user-attachments/assets/17783899-9401-4459-82a7-75ed9f4993dd" />
@@ -97,6 +113,22 @@ Round Robin used a Time Quantum of 4. Every ready process gets CPU access in a f
 Priority Scheduling rule: Lower number = higher priority (tie-break: earlier arrival time). High-priority processes in this workload received faster service than average, confirming the urgency policy is effective.
 3 · Starvation & Fairness Risk
 No significant starvation was detected in this workload. However, Priority Scheduling remains susceptible to starvation whenever high-priority processes keep arriving — Round Robin structurally prevents this through its rotation mechanism.
+
+4 · Required Analysis Questions
+Q1: Which algorithm gave better average waiting time?
+Round Robin — RR: 8.25, PR: 10.75.
+
+Q2: Which algorithm gave better average response time?
+Round Robin — RR: 4.25, PR: 10.75.
+
+Q3: Did higher-priority processes gain a significant advantage?
+Yes — high-priority processes completed with below-average waiting time.
+
+Q4: Did Round Robin appear more balanced across all processes?
+Yes — with quantum = 4, all processes received CPU time in rotation. No process was completely blocked by another.
+
+Q5: Was starvation observed or likely in Priority Scheduling?
+Not in this workload, but the structural risk exists with continuous high-priority arrivals.
 
 **Screenshot:**  
 <img width="1140" height="870" alt="Screenshot 2026-05-06 135704" src="https://github.com/user-attachments/assets/5f6bdf27-123f-4418-8524-0ddbb647e99a" />
@@ -139,6 +171,22 @@ Priority Scheduling rule: Lower number = higher priority (tie-break: earlier arr
 3 · Starvation & Fairness Risk
 No significant starvation was detected in this workload. However, Priority Scheduling remains susceptible to starvation whenever high-priority processes keep arriving — Round Robin structurally prevents this through its rotation mechanism.
 
+4 · Required Analysis Questions
+Q1: Which algorithm gave better average waiting time?
+Priority — RR: 13.25, PR: 8.75.
+
+Q2: Which algorithm gave better average response time?
+Round Robin — RR: 2.75, PR: 8.75.
+
+Q3: Did higher-priority processes gain a significant advantage?
+Partially — depends on burst length competition with other processes.
+
+Q4: Did Round Robin appear more balanced across all processes?
+Yes — with quantum = 2, all processes received CPU time in rotation. No process was completely blocked by another.
+
+Q5: Was starvation observed or likely in Priority Scheduling?
+Not in this workload, but the structural risk exists with continuous high-priority arrivals.
+ 
 **Screenshot:**  
 <img width="1241" height="942" alt="Screenshot 2026-05-06 152829" src="https://github.com/user-attachments/assets/1cdff415-23cf-4aa5-88b7-a90cebe4d643" />
 <img width="574" height="938" alt="Screenshot 2026-05-06 152852" src="https://github.com/user-attachments/assets/d03cc523-c9d4-4f3d-8fd8-fae02befbd10" />
@@ -180,6 +228,22 @@ Priority Scheduling rule: Lower number = higher priority (tie-break: earlier arr
 3 · Starvation & Fairness Risk
 ⚠ Starvation risk observed in Priority Scheduling. Maximum waiting time (12) is significantly above the average (5.40). A low-priority process experienced severe delay — this happens when high-priority processes continuously preempt it.
 
+4 · Required Analysis Questions
+Q1: Which algorithm gave better average waiting time?
+Priority — RR: 6.60, PR: 5.40.
+
+Q2: Which algorithm gave better average response time?
+Equal on this workload.
+
+Q3: Did higher-priority processes gain a significant advantage?
+Partially — depends on burst length competition with other processes.
+
+Q4: Did Round Robin appear more balanced across all processes?
+Yes — with quantum = 3, all processes received CPU time in rotation. No process was completely blocked by another.
+
+Q5: Was starvation observed or likely in Priority Scheduling?
+Yes — a low-priority process experienced disproportionately high waiting time.
+
 **Screenshot:**  
 <img width="1115" height="921" alt="Screenshot 2026-05-06 153248" src="https://github.com/user-attachments/assets/f3a10db3-940c-4f2d-8aaf-39397bc504a6" />
 
@@ -218,6 +282,16 @@ Priority Scheduling rule: Lower number = higher priority (tie-break: earlier arr
 - No aging mechanism for Priority Scheduling
 - Ready queue shows a mid-run snapshot, not a full step-by-step trace
 - Maximum recommended processes: 10
+
+---
+
+## ✅ Overall Conclusion
+
+Across all test scenarios:
+- **Round Robin** consistently gave better **Response Time** — making it ideal for interactive/time-sharing systems
+- **Priority Scheduling** gave better **Waiting Time and Turnaround Time** in most scenarios — making it better for real-time systems with urgency
+- **Starvation** was observed in Scenarios A and D under Priority Scheduling
+- The core trade-off is **Fairness (RR) vs Urgency (Priority)**
 
 ---
 
