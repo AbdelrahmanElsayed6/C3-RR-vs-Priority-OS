@@ -1,6 +1,3 @@
-/* ══════════════════════════════════════════════
-   PROCESS COLORS
-══════════════════════════════════════════════ */
 const PROCESS_COLORS = [
   { bg: '#00b4d8', text: '#000' },
   { bg: '#ef476f', text: '#fff' },
@@ -25,9 +22,7 @@ function getColor(pid) {
   return colorMap[pid];
 }
 
-/* ══════════════════════════════════════════════
-   PROCESS TABLE — ADD / RESET
-══════════════════════════════════════════════ */
+
 function addRow(arrival = 0, burst = 5, priority = 2) {
   pidCounter++;
   const id   = `P${pidCounter}`;
@@ -44,27 +39,27 @@ function addRow(arrival = 0, burst = 5, priority = 2) {
 }
 
 function resetAll() {
-  // Clear process table
+  
   document.getElementById('process-list').innerHTML = '';
   pidCounter = 0;
   colorMap   = {};
 
-  // Reset config fields
+  
   document.getElementById('quantum').value       = 3;
   document.getElementById('priority-rule').value = 'low';
 
-  // Clear validation message
+  
   const msgEl = document.getElementById('validation-msg');
   msgEl.style.display = 'none';
   msgEl.innerHTML = '';
 
-  // Clear scenario description & active class
+  
   const descEl = document.getElementById('scenario-desc');
   descEl.style.display = 'none';
   descEl.innerHTML = '';
   document.querySelectorAll('.btn-scenario').forEach(b => b.classList.remove('active'));
 
-  // Reset result panels
+  
   document.getElementById('rr-gantt').innerHTML =
     '<div class="placeholder"><div class="icon-big">⬡</div>No data yet</div>';
   document.getElementById('priority-gantt').innerHTML =
@@ -84,9 +79,7 @@ function resetAll() {
   document.getElementById('pr-rule-badge').textContent     = '';
 }
 
-/* ══════════════════════════════════════════════
-   COLLECT PROCESS DATA
-══════════════════════════════════════════════ */
+
 function getProcesses() {
   const rows = document.querySelectorAll('#process-list tr');
   return Array.from(rows).map(row => ({
@@ -99,9 +92,7 @@ function getProcesses() {
   }));
 }
 
-/* ══════════════════════════════════════════════
-   VALIDATION
-══════════════════════════════════════════════ */
+
 function validate(processes, quantum) {
   const errors = [];
 
@@ -113,7 +104,7 @@ function validate(processes, quantum) {
   if (isNaN(quantum) || quantum < 1)
     errors.push('• Time Quantum must be a positive integer ≥ 1.');
 
-  // Duplicate IDs
+ 
   const ids = processes.map(p => p.id);
   const dups = ids.filter((id, i) => ids.indexOf(id) !== i);
   if (dups.length)
@@ -131,23 +122,19 @@ function validate(processes, quantum) {
   return errors;
 }
 
-/* ══════════════════════════════════════════════
-   DEEP CLONE
-══════════════════════════════════════════════ */
+
 function deepClone(proc) {
   return proc.map(p => ({ ...p, remaining: p.burst, finish: 0, tat: 0, wt: 0, rt: -1 }));
 }
 
-/* ══════════════════════════════════════════════
-   ALGORITHM — ROUND ROBIN
-══════════════════════════════════════════════ */
+
 function solveRR(proc, q) {
   let time = 0, n = proc.length, gantt = [], queue = [], completed = 0;
   const sorted   = [...proc].sort((a, b) => a.arrival - b.arrival || a.id.localeCompare(b.id));
   const enqueued = new Set();
   const queueHistory = [];
 
-  // Enqueue processes arriving at time 0
+  
   sorted.forEach(p => {
     if (p.arrival <= time && !enqueued.has(p.id)) {
       queue.push(p);
@@ -156,7 +143,7 @@ function solveRR(proc, q) {
   });
 
   while (completed < n) {
-    // Enqueue any newly arrived processes
+    
     sorted.forEach(p => {
       if (p.arrival <= time && !enqueued.has(p.id) && p.remaining > 0) {
         queue.push(p);
@@ -213,9 +200,7 @@ function solveRR(proc, q) {
   return { metrics: proc, gantt, avgWt, avgTat, avgRt, queueHistory };
 }
 
-/* ══════════════════════════════════════════════
-   ALGORITHM — PREEMPTIVE PRIORITY
-══════════════════════════════════════════════ */
+
 function solvePriority(proc, rule) {
   let time = 0, n = proc.length, gantt = [], completed = 0;
 
@@ -223,11 +208,11 @@ function solvePriority(proc, rule) {
     const available = proc.filter(p => p.arrival <= time && p.remaining > 0);
 
     if (available.length > 0) {
-      // Sort by priority; tie-break by earliest arrival
+      
       available.sort((a, b) => {
         const priDiff = rule === 'low'
-          ? a.priority - b.priority    // lower number = higher priority
-          : b.priority - a.priority;   // higher number = higher priority
+          ? a.priority - b.priority    
+          : b.priority - a.priority;   
         return priDiff !== 0 ? priDiff : a.arrival - b.arrival;
       });
 
@@ -255,9 +240,7 @@ function solvePriority(proc, rule) {
   return { metrics: proc, gantt, avgWt, avgTat, avgRt };
 }
 
-/* ══════════════════════════════════════════════
-   MAIN SIMULATION ENTRY POINT
-══════════════════════════════════════════════ */
+
 function startSimulation() {
   colorMap = {};
 
@@ -266,7 +249,7 @@ function startSimulation() {
   const quantum   = parseInt(document.getElementById('quantum').value);
   const pRule     = document.getElementById('priority-rule').value;
 
-  // ── Validate ──
+  
   const errors = validate(processes, quantum);
   if (errors.length) {
     msgEl.style.display = 'block';
@@ -275,20 +258,20 @@ function startSimulation() {
   }
   msgEl.style.display = 'none';
 
-  // Pre-assign colors
+  
   processes.forEach(p => getColor(p.id));
 
-  // ── Solve ──
+  
   const rrResult = solveRR(deepClone(processes), quantum);
   const prResult = solvePriority(deepClone(processes), pRule);
 
-  // ── Badges ──
+  
   document.getElementById('rr-quantum-badge').textContent =
     `Quantum = ${quantum}`;
   document.getElementById('pr-rule-badge').textContent =
     pRule === 'low' ? 'Lower # = Higher Priority' : 'Higher # = Higher Priority';
 
-  // ── Render ──
+ 
   renderQueueDisplay(rrResult.queueHistory);
   renderGantt('rr-gantt',       rrResult.gantt);
   renderGantt('priority-gantt', prResult.gantt);
@@ -297,19 +280,16 @@ function startSimulation() {
   renderTable('rr-table-container',       rrResult.metrics, rrResult.avgWt, rrResult.avgTat, rrResult.avgRt, 'rr');
   renderTable('priority-table-container', prResult.metrics, prResult.avgWt, prResult.avgTat, prResult.avgRt, 'pr');
 
-  // ── Starvation warning ──
+  
   const maxPrWt = Math.max(...prResult.metrics.map(p => p.wt));
   document.getElementById('starvation-warn').style.display =
     (maxPrWt > prResult.avgWt * 2.5 && processes.length > 2) ? 'block' : 'none';
 
-  // ── Report ──
+  
   generateReport(rrResult, prResult, quantum, pRule, processes);
 }
 
-/* ══════════════════════════════════════════════
-   RENDER — GANTT CHART
-   (Compressed: consecutive same-process blocks merged)
-══════════════════════════════════════════════ */
+
 function renderGantt(id, data) {
   const container = document.getElementById(id);
   if (!data || data.length === 0) {
@@ -317,7 +297,7 @@ function renderGantt(id, data) {
     return;
   }
 
-  // Compress consecutive same-process blocks
+ 
   const compressed = [];
   data.forEach(d => {
     const last = compressed[compressed.length - 1];
@@ -351,9 +331,7 @@ function renderGantt(id, data) {
   container.innerHTML = html;
 }
 
-/* ══════════════════════════════════════════════
-   RENDER — PROCESS LEGEND
-══════════════════════════════════════════════ */
+
 function renderLegend(id, processes) {
   const el = document.getElementById(id);
   el.style.display = 'flex';
@@ -369,9 +347,7 @@ function renderLegend(id, processes) {
     </div>`;
 }
 
-/* ══════════════════════════════════════════════
-   RENDER — READY QUEUE SNAPSHOT
-══════════════════════════════════════════════ */
+
 function renderQueueDisplay(queueHistory) {
   const el   = document.getElementById('rr-queue-display');
   const snap = queueHistory.length
@@ -387,9 +363,7 @@ function renderQueueDisplay(queueHistory) {
           .join('<span class="queue-arrow">→</span>'));
 }
 
-/* ══════════════════════════════════════════════
-   RENDER — METRICS TABLE
-══════════════════════════════════════════════ */
+
 function renderTable(containerId, data, avgWt, avgTat, avgRt, type) {
   const container = document.getElementById(containerId);
   const accent    = type === 'rr' ? 'var(--accent-rr)' : 'var(--accent-pr)';
@@ -443,9 +417,7 @@ function renderTable(containerId, data, avgWt, avgTat, avgRt, type) {
   container.innerHTML = html;
 }
 
-/* ══════════════════════════════════════════════
-   GENERATE REPORT
-══════════════════════════════════════════════ */
+
 function generateReport(rr, pr, quantum, pRule, processes) {
   const report = document.getElementById('final-report');
 
@@ -460,12 +432,12 @@ function generateReport(rr, pr, quantum, pRule, processes) {
     return w === 'RR' ? 'win-rr' : w === 'PR' ? 'win-pr' : 'win-tie';
   }
 
-  // Starvation analysis
+  
   const prWts    = pr.metrics.map(p => p.wt);
   const maxPrWt  = Math.max(...prWts);
   const starvRisk = maxPrWt > pr.avgWt * 2 && processes.length > 2;
 
-  // Urgency benefit: did high-priority processes get lower-than-average WT?
+ 
   const highPriProcs = pRule === 'low'
     ? processes.filter(p => p.priority === Math.min(...processes.map(x => x.priority)))
     : processes.filter(p => p.priority === Math.max(...processes.map(x => x.priority)));
@@ -475,7 +447,7 @@ function generateReport(rr, pr, quantum, pRule, processes) {
       .filter(pm => highPriProcs.some(h => h.id === pm.id))
       .every(pm => pm.wt <= pr.avgWt);
 
-  // Overall recommendation
+  
   const scores = [winWt, winTat, winRt];
   const rrWins = scores.filter(w => w === 'RR').length;
   const prWins = scores.filter(w => w === 'PR').length;
@@ -611,9 +583,7 @@ function generateReport(rr, pr, quantum, pRule, processes) {
     </div>`;
 }
 
-/* ══════════════════════════════════════════════
-   PRESET SCENARIOS
-══════════════════════════════════════════════ */
+
 const SCENARIOS = {
   A: {
     label:       'Scenario A — Basic Mixed Workload',
@@ -681,32 +651,27 @@ const SCENARIOS = {
 function loadScenario(key) {
   const s = SCENARIOS[key];
 
-  // Mark active button
   document.querySelectorAll('.btn-scenario').forEach(b => b.classList.remove('active'));
   document.querySelector(`[onclick="loadScenario('${key}')"]`).classList.add('active');
 
-  // Show description
   const descEl = document.getElementById('scenario-desc');
   descEl.style.display = 'block';
   descEl.innerHTML = `<strong>${s.label}</strong><br>${s.description}`;
 
-  // Set config
+ 
   document.getElementById('quantum').value       = s.quantum;
   document.getElementById('priority-rule').value = s.rule;
 
-  // Rebuild table
+  
   document.getElementById('process-list').innerHTML = '';
   pidCounter = 0;
   colorMap   = {};
   s.processes.forEach(p => addRow(p.arrival, p.burst, p.priority));
 
-  // Auto-run (validation scenario will show errors)
   startSimulation();
 }
 
-/* ══════════════════════════════════════════════
-   INIT — Load Scenario A on page load
-══════════════════════════════════════════════ */
+
 (function init() {
   loadScenario('A');
 })();
