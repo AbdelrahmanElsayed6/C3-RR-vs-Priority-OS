@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<!-- ══════════════ HEADER ══════════════ -->
+
 <header>
   <div class="header-left">
     <h1>C3 | <span>Round Robin</span> vs Priority Scheduling</h1>
@@ -23,7 +23,7 @@
 
 <div class="main-grid">
 
-  <!-- ═══════════════ LEFT PANEL ═══════════════ -->
+  
   <div class="left-col">
     <div class="card">
       <div class="card-header">
@@ -31,7 +31,7 @@
         <h2>Configuration &amp; Process Input</h2>
       </div>
 
-      <!-- Scenario Buttons -->
+      
       <div class="scenarios-bar">
         <span class="s-label">Load Scenario:</span>
         <button class="btn-scenario" onclick="loadScenario('A')">A · Basic</button>
@@ -41,7 +41,7 @@
         <button class="btn-scenario" onclick="loadScenario('E')">E · Validation</button>
       </div>
 
-      <!-- Scenario Description Box -->
+      
       <div id="scenario-desc" class="scenario-desc" style="display:none"></div>
 
       <div class="card-body">
@@ -74,7 +74,7 @@
           </table>
         </div>
 
-        <!-- Validation Message -->
+        
         <div id="validation-msg"></div>
 
         <div class="btn-row">
@@ -86,17 +86,17 @@
     </div>
   </div>
 
-  <!-- ═══════════════ RIGHT PANEL ═══════════════ -->
+  
   <div class="right-col">
 
-    <!-- Round Robin Results -->
+    
     <div class="card">
       <div class="card-header">
         <div class="icon icon-blue">⬡</div>
         <h2>Round Robin Results</h2>
         <span id="rr-quantum-badge" class="algo-badge"></span>
       </div>
-      <!-- Ready Queue Display -->
+      
       <div class="queue-row" id="rr-queue-display">
         <span class="queue-label">Ready Queue:</span>
         <span class="queue-empty">Run simulation to see queue state</span>
@@ -117,7 +117,7 @@
       </div>
     </div>
 
-    <!-- Priority Results -->
+    
     <div class="card">
       <div class="card-header">
         <div class="icon icon-red">◈</div>
@@ -143,7 +143,7 @@
       </div>
     </div>
 
-    <!-- Comparison & Report -->
+    
     <div class="card">
       <div class="card-header">
         <div class="icon icon-gold">≋</div>
@@ -157,8 +157,8 @@
       </div>
     </div>
 
-  </div><!-- /right-col -->
-</div><!-- /main-grid -->
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>
